@@ -1,6 +1,6 @@
 # Java JWT authentication code example
 
-Repository: add after upload to github
+Repository: [connect-java-worker-aws](https://github.docusignhq.com/chen-ostrovski/connect-java-worker-aws).
 
 ## Introduction
 
