@@ -89,8 +89,6 @@ public class ProcessNotification {
 			file = envelopeStatusNodes.item(0);
 			status = file.getTextContent();
 
-			// Checks if the envelope was sent from the test
-
 			if(status.equals("Completed")){
 				completed = true;
 				completedMsg = "Completed " + completed;
