@@ -27,7 +27,7 @@ public class AWSWorker {
 	private static boolean restart = true; //restart the program if any error has occurred
 
 	public static void main(String args[]) throws Exception {
-
+		
 		listenForever();
 		
 	}
@@ -118,7 +118,8 @@ public class AWSWorker {
 
 		try {
 			// Receive messages from queue, maximum waits for 20 seconds for message
-			ReceiveMessageRequest receive_request = new ReceiveMessageRequest()
+			ReceiveMessageRequest receive_request = new ReceiveMessageRequest().clone()
+					.withMaxNumberOfMessages(10)
 					.withQueueUrl(queueUrl)
 					.withWaitTimeSeconds(20);
 
@@ -168,16 +169,7 @@ public class AWSWorker {
 		else {
 			// Remove the oldest message
 			checkLogQ.remove();
-			// Create temporary queue in order to change checkLogQ
-			Queue<String> temp = new LinkedList<String>();
-			for(String msg : checkLogQ) {
-				temp.add(msg);
-			}
-			// Add the new message
-			temp.add(message);
-			checkLogQ.clear();
-			checkLogQ.addAll(temp);
-			temp.clear(); // Reset
+			checkLogQ.add(message);
 		}
 	}
 
