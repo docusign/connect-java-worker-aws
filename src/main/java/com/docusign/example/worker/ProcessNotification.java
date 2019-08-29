@@ -165,7 +165,7 @@ public class ProcessNotification {
 	}
 
 	/**
-	 * creating a new file that contains the envelopeId and orderNumber
+	 * Creates a new file that contains the envelopeId and orderNumber
 	 * @param envelopeId parse from the message 
 	 * @param orderNumber parse from the message 
 	 * @throws Exception failed to create file or failed to save the document
@@ -220,7 +220,7 @@ public class ProcessNotification {
 			System.err.println("ClientHandlerException: " + e.getMessage());
 		}
 
-		// Catch exception while trying to save the document
+		// Catch exception while fetching and saving docs for envelope
 		catch(Exception e) {
 			date = new Date();
 			System.err.println(formatter.format(date) + 

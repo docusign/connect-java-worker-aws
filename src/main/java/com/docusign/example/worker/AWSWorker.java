@@ -167,7 +167,7 @@ public class AWSWorker {
 		}
 		// If checkLogQ size is bigger than 4
 		else {
-			// Remove the oldest message
+			// Remove the oldest message and add the new one 
 			checkLogQ.remove();
 			checkLogQ.add(message);
 		}
@@ -234,7 +234,7 @@ public class AWSWorker {
 			date = new Date();
 			System.out.println(formatter.format(date) + errorMessage);
 		}
-		// Delete the message after all its information has been parsed
+		// Delete received message from queue
 		queue.deleteMessage(queueUrl, message.getReceiptHandle());
 	}
 }
