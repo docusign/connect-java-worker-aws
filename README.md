@@ -15,20 +15,21 @@ messages from the queue and then processes them:
   uses a DocuSign JWT Grant token to retrieve
   the envelope's combined set of documents,
   and stores them in the `output` directory.
+  
+   For this example, the envelope **must** 
+   include an Envelope Custom Field
+   named `Sales order.` The Sales order field is used
+   to name the output file.
 
-  For this example, the envelope **must** 
-  include an Envelope Custom Field
-  named `Sales order.` The Sales order field is used
-  to name the output file.
+## Architecture
 
+![Connect listener architecture](docs/connect_listener_architecture.png)
+
+AWS has [SQS](https://aws.amazon.com/tools/)
+SDK libraries for C#, Java, Node.js, Python, Ruby, C++, and Go. 
 
 ## Installation
 
-1. need to be change !!!! = Install the example 
-   [Connect listener for AWS](https://github.com/docusign/connect-node-listener-aws)
-   on AWS.
-   At the end of this step, you will have the
-   `Queue URL`, and `Queue Region`.
 
 1. Using AWS IAM, create an IAM `User` with 
    access to your SQS queue. 
@@ -65,8 +66,8 @@ messages from the queue and then processes them:
 
 ### Eclipse installation
 
-See the [Eclipse instructions](https://github.com/docusign/eg-01-java-jwt/blob/master/docs/Readme.IntelliJ.md).
-need to be changed!!!
+See the [Eclipse instructions](https://github.docusignhq.com/chen-ostrovski/connect-java-worker-aws/blob/master/docs/Readme.Eclipse.md)
+
 
 ## Configure the example
 
@@ -101,37 +102,29 @@ Your DocuSign Integration Key must be configured for a JWT OAuth authentication 
   `Redirect URI` for the key. Any URL can be used. By default, this
   example uses `https://www.docusign.com`
 
-#### The impersonated user's guid
-The JWT will impersonate a user within your account. The user can be
-an individual or a user representing a group such as "HR".
-
-The example needs the guid assigned to the user.
-The guid value for each user in your account is available from
-the DocuSign Admin tool in the **Users** section.
-
-To see a user's guid, **Edit** the user's information.
-On the **Edit User** screen, the guid for the user is shown as
-the `API Username`.
+````
+# private key string
+# NOTE: the Java config file parser requires that you 
+# add \n\ at the ending of every line
+# DS_PRIVATE_KEY=\n\
+-----BEGIN RSA PRIVATE KEY-----\n\
+MIIEpAIBAAKCAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+MIIEpAIBAAKCAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+MIIEpAIBAAKCAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+MIIEpAIBAAKCAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+MIIEpAIBAAKCAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+MIIEpAIBAAKCAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+MIIEpAIBAAKCAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+...
+UC1WqwKBgQCY/6aZxlWX9XYgsQsnUjhj2aTwr7pCiQuYceIzLTQzy+nz8M4PfCE1\n\
+rjRsm6YTpoxh7nuW2qnFfMA58UPs9tonN/z1pr9mKfwmamtPXeMSJeEZUVmh7mNx\n\
+PEHgznlGh/vUboCuA4tQOcKytxFfKG4F+jM/g4GH9z46KZOow3Hb6g==\n\
+-----END RSA PRIVATE KEY-----
+````  
 
 ## Run the examples
 
 The project's main class is `com.docusign.example.jwt.AWSWorker`
-
-### Consent
-With JWT authentication, your application will **impersonate** a
-DocuSign user in your account. To do so, your integration key
-must gain the **consent** of the person who will be impersonated.
-There are several methods availables:
-
-1. Recommended: use the Organization Administration feature to
-   preemptively grant consent. This technique requires that the
-   account have Organization administration enabled and the
-   email domain of the affected users must be claimed. SSO is
-   not required.
-1. Grant consent individually. Consent can be obtained for
-   each user by having the user follow the first leg in the
-   OAuth authorization code flow. The code example prints
-   the url that should be used if consent is required.
 
 ## Support, Contributions, License
 

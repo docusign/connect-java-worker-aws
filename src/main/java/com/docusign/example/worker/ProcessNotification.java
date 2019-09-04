@@ -291,7 +291,7 @@ public class ProcessNotification {
 		FileWriter writer = new FileWriter(newFile);
 		writer.write(test);
 		date = new Date();
-		System.out.println(formatter.format(date) + " Created new file");
+		System.out.println(formatter.format(date) + " New file created");
 		writer.close();
 	}
 }
