@@ -24,6 +24,7 @@ public class AWSWorker {
 	private static AmazonSQS queue = AmazonSQSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(creds)).withRegion(DSConfig.QUEUE_REGION).build();
 	private static Queue<String> checkLogQ = new LinkedList<String>();
 	private static String queueUrl = DSConfig.QUEUE_URL; 
+	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 	private static boolean restart = true; //restart the program if any error has occurred
 
 	public static void main(String args[]) throws Exception {
@@ -45,7 +46,6 @@ public class AWSWorker {
 		while(true) {
 			if(restart) {
 				Date date = new Date();
-				SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 				System.out.println(formatter.format(date) + " Starting queue worker");
 				restart = false;
 				// Start the queue worker
@@ -66,7 +66,7 @@ public class AWSWorker {
 				System.err.println("Problem: you need to configure this example, either via environment variables (recommended) \n" + 
 						"or via the ds_configuration.js file. \n" + 
 						"See the README file for more information\n\n");
-				return;
+				System.exit(0);
 			}
 			JWTAuth dsJWTAuth = new JWTAuth(apiClient);
 			dsJWTAuth.checkToken();
@@ -102,7 +102,6 @@ public class AWSWorker {
 		// Not an API problem
 		catch(Exception e) {
 			Date date = new Date();
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 			System.err.println(formatter.format(date) +  " " + e.getMessage());
 		}
 	}
@@ -114,7 +113,6 @@ public class AWSWorker {
 	private static void startQueue() throws Exception {
 
 		Date date;
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 		try {
 			// Receive messages from queue, maximum waits for 20 seconds for message
@@ -198,7 +196,6 @@ public class AWSWorker {
 		// If there is an error the program will catch it and the JSONCreated will change to false
 		boolean JSONCreated = true;
 		Date date = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 		if(DSConfig.DEBUG.equals("true")) {
 			String str = " Processing message id " + message.getMessageId();

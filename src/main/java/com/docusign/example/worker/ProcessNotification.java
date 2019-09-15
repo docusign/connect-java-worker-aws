@@ -44,6 +44,7 @@ public class ProcessNotification {
 	private static String orderNumber;
 	// Access to the current working directory - in order to save the folders in the right path
 	public static String mainPath = Paths.get(".").toAbsolutePath().normalize().toString();
+	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 	/**
 	 * Process the notification message
@@ -130,7 +131,6 @@ public class ProcessNotification {
 			// Step 2. Filter the notifications
 			boolean ignore = false;
 			Date date = new Date();
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 			// Check if the envelope was sent from the test mode 
 			// If sent from test mode - ok to continue even if the status != Completed
@@ -173,7 +173,6 @@ public class ProcessNotification {
 	private static void saveDoc(String envelopeId, String orderNumber) throws Exception {
 
 		Date date = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); 
 		try {
 			ApiClient dsApiClient = new ApiClient();
 			JWTAuth dsJWTAuth = new JWTAuth(dsApiClient);
@@ -238,7 +237,6 @@ public class ProcessNotification {
 	private static void processTest(String test) throws Exception {
 
 		Date date = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 		// Exit the program if BREAK_TEST equals to true or if orderNumber contains "/break"
 		if(DSConfig.ENABLE_BREAK_TEST.equals("true") && ("" + test).contains("/break")){
