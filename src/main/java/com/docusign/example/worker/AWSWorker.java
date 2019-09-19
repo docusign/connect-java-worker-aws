@@ -191,7 +191,7 @@ public class AWSWorker {
 	 */
 	private static void messageHandler(Message message,  AmazonSQS queue) throws Exception {
 
-		String test = null;
+		Integer test = 0;
 		String xml = null;
 		// If there is an error the program will catch it and the JSONCreated will change to false
 		boolean JSONCreated = true;
@@ -207,7 +207,7 @@ public class AWSWorker {
 			JSONObject jsonObject = new JSONObject(body);
 			xml = (String) jsonObject.get("xml");
 			// Used in the test mode
-			test = (String) jsonObject.get("test");
+			test = (Integer) jsonObject.get("test");
 
 		}
 		// Catch exceptions while trying to create a JSON object

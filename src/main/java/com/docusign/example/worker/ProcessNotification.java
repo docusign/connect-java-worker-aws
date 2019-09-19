@@ -1,7 +1,12 @@
 package com.docusign.example.worker;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import com.docusign.esign.api.EnvelopesApi;
+import com.docusign.esign.client.ApiClient;
+import com.sun.jersey.api.client.ClientHandlerException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -9,27 +14,15 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-import org.apache.commons.io.FileUtils;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import com.docusign.esign.api.EnvelopesApi;
-import com.docusign.esign.client.ApiClient;
-import com.docusign.esign.client.ApiException;
-import com.sun.jersey.api.client.ClientHandlerException;
-
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class ProcessNotification {
 
@@ -52,9 +45,9 @@ public class ProcessNotification {
 	 * @param xml contains all the information of the envelope
 	 * @throws Exception failed to create file or failed to save the document - caught at startQueue method
 	 */
-	public static void process(String test, String xml) throws Exception{
+	public static void process(Integer test, String xml) throws Exception{
 		// Send the message to the test mode
-		if(!test.isEmpty()) {
+		if(test > 0) {
 			processTest(test);
 		}
 		// In test mode there is no xml sting, should be checked before trying to parse it
@@ -184,7 +177,7 @@ public class ProcessNotification {
 
 
 			// Create the output directory if needed 
-			File file = new File(mainPath+"\\output");
+			File file = new File( Paths.get(mainPath, "output").toString());
 			if (!file.exists()) {
 				if (!file.mkdir()) {
 					date = new Date();
@@ -193,7 +186,7 @@ public class ProcessNotification {
 			} 
 
 			byte[] results = envelopesApi.getDocument(dsJWTAuth.getAccountId(), envelopeId, "combined");
-			Path path = Paths.get("output/" + DSConfig.OUTPUT_FILE_PREFIX + orderNumber + ".pdf");
+			Path path = Paths.get(mainPath,"output", DSConfig.OUTPUT_FILE_PREFIX + orderNumber + ".pdf");
 
 			try {
 				// Create the output file
@@ -234,7 +227,7 @@ public class ProcessNotification {
 	 * @param test contains the test number
 	 * @throws Exception if failed to create directory or failed to rename a file name 
 	 */
-	private static void processTest(String test) throws Exception {
+	private static void processTest(Integer test) throws Exception {
 
 		Date date = new Date();
 
@@ -245,11 +238,11 @@ public class ProcessNotification {
 			System.exit(2);
 		}
 
-		System.out.println("Processing test value " + test);
+		System.out.println("Processing test value " + test.toString());
 
 		// Create the test_messages directory if needed 
 		String testDirName = DSConfig.TEST_OUTPUT_DIR_NAME;
-		File testDir = new File(mainPath + "\\" + testDirName);
+		File testDir = new File(Paths.get(mainPath, testDirName).toString());
 		if (!testDir.exists()) {
 			if (!testDir.mkdir()) {
 				date = new Date();
@@ -287,7 +280,7 @@ public class ProcessNotification {
 		// The new test message will be placed in test1 - creating new file
 		File newFile = new File(testDir, "test1.txt");
 		FileWriter writer = new FileWriter(newFile);
-		writer.write(test);
+		writer.write(test.toString());
 		date = new Date();
 		System.out.println(formatter.format(date) + " New file created");
 		writer.close();
