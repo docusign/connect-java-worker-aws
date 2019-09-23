@@ -160,7 +160,7 @@ public class RunTest {
 	private void send1(String test) {
 
 		try {
-			URL url = new URL(DSConfig.TEST_ENQUEUE_URL + "?test=" + test);
+			URL url = new URL(DSConfig.ENQUEUE_URL + "?test=" + test);
 			HttpsURLConnection options = (HttpsURLConnection) url.openConnection();
 			options.setReadTimeout(1000 * 20);
 			options.setRequestMethod("GET");

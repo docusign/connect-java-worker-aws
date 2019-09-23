@@ -42,7 +42,7 @@ public final class DSConfig {
     public static final String TEST_OUTPUT_DIR_NAME;
     public static final String BASIC_AUTH_NAME;
     public static final String BASIC_AUTH_PW;
-    public static final String TEST_ENQUEUE_URL;
+    public static final String ENQUEUE_URL;
     
     public static final String AUD () {
         if(DS_AUTH_SERVER != null && DS_AUTH_SERVER.startsWith("https://"))
@@ -83,7 +83,7 @@ public final class DSConfig {
         TEST_OUTPUT_DIR_NAME = fetchValue(config, "TEST_OUTPUT_DIR_NAME");
         BASIC_AUTH_NAME = fetchValue(config, "BASIC_AUTH_NAME");
         BASIC_AUTH_PW = fetchValue(config, "BASIC_AUTH_PW");
-        TEST_ENQUEUE_URL = fetchValue(config, "TEST_ENQUEUE_URL");
+        ENQUEUE_URL = fetchValue(config, "ENQUEUE_URL");
         
     }
 

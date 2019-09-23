@@ -1,4 +1,4 @@
-# Java JWT authentication code example
+# Java: Connect Worker for AWS
 
 Repository: [connect-java-worker-aws](https://github.docusignhq.com/chen-ostrovski/connect-java-worker-aws).
 
@@ -30,6 +30,11 @@ SDK libraries for C#, Java, Node.js, Python, Ruby, C++, and Go.
 
 ## Installation
 
+1. Install the example 
+   [Connect listener for AWS](https://github.com/docusign/connect-node-listener-aws)
+   on AWS.
+   At the end of this step, you will have the
+   `Queue URL`, `Queue Region` and `Enqueue url`.
 
 1. Using AWS IAM, create an IAM `User` with 
    access to your SQS queue. 
