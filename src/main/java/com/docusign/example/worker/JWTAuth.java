@@ -47,7 +47,7 @@ public class JWTAuth {
     }
 
     private void updateToken() throws IOException, ApiException {
-        System.out.println("\nFetching an access token via JWT grant...");
+        System.out.println("Fetching an access token via JWT grant...");
 
         java.util.List<String> scopes = new ArrayList<String>();
         // Only signature scope is needed. Impersonation scope is implied.
@@ -63,7 +63,7 @@ public class JWTAuth {
                 privateKeyBytes,
                 TOKEN_EXPIRATION_IN_SECONDS);
         apiClient.setAccessToken(oAuthToken.getAccessToken(), oAuthToken.getExpiresIn());
-        System.out.println("Done. Continuing...\n");
+        System.out.println("Done. Continuing...");
 
         if(_account == null)
             _account = this.getAccountInfo(apiClient);

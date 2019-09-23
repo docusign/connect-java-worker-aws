@@ -24,7 +24,6 @@ public class AWSWorker {
 	private static AmazonSQS queue = AmazonSQSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(creds)).withRegion(DSConfig.QUEUE_REGION).build();
 	private static Queue<String> checkLogQ = new LinkedList<String>();
 	private static String queueUrl = DSConfig.QUEUE_URL; 
-	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 	private static boolean restart = true; //restart the program if any error has occurred
 
 	public static void main(String args[]) throws Exception {
@@ -45,8 +44,7 @@ public class AWSWorker {
 
 		while(true) {
 			if(restart) {
-				Date date = new Date();
-				System.out.println(formatter.format(date) + " Starting queue worker");
+				System.out.println(DatePretty.date() + "Starting queue worker");
 				restart = false;
 				// Start the queue worker
 				startQueue();
@@ -101,8 +99,7 @@ public class AWSWorker {
 		}
 		// Not an API problem
 		catch(Exception e) {
-			Date date = new Date();
-			System.err.println(formatter.format(date) +  " " + e.getMessage());
+			System.err.println(DatePretty.date() + e.getMessage());
 		}
 	}
 
@@ -112,8 +109,6 @@ public class AWSWorker {
 	 */
 	private static void startQueue() throws Exception {
 
-		Date date;
-
 		try {
 			// Receive messages from queue, maximum waits for 20 seconds for message
 			ReceiveMessageRequest receive_request = new ReceiveMessageRequest().clone()
@@ -122,14 +117,12 @@ public class AWSWorker {
 					.withWaitTimeSeconds(20);
 
 			while(true) {
-				date = new Date();
-				addCheckLogQ(formatter.format(date) + " Awaiting a message...");
+				addCheckLogQ(DatePretty.date() + "Awaiting a message...");
 				// The List will contain all the queue messages
 				List<Message> messages = queue.receiveMessage(receive_request).getMessages();
 				// The amount of messages received
 				int msgCount = messages.size();
-				date = new Date();
-				addCheckLogQ(formatter.format(date) + " found " + msgCount + " message(s)");
+				addCheckLogQ(DatePretty.date() + "found " + msgCount + " message(s)");
 				// If at least one message has been received
 				if(msgCount!=0) {
 					printCheckLogQ();
@@ -142,8 +135,7 @@ public class AWSWorker {
 		// Catches all types of errors that may occur during the program
 		catch(Exception e) {
 			printCheckLogQ();
-			date = new Date();
-			System.err.println("\n"+formatter.format(date) + " Queue receive error:");
+			System.err.println("\n"+DatePretty.date() + "Queue receive error:");
 			System.err.println(e.getMessage());
 			TimeUnit.SECONDS.sleep(5);
 			// Restart the program
@@ -191,15 +183,15 @@ public class AWSWorker {
 	 */
 	private static void messageHandler(Message message,  AmazonSQS queue) throws Exception {
 
-		Integer test = 0;
+		String test = "";
 		String xml = null;
 		// If there is an error the program will catch it and the JSONCreated will change to false
 		boolean JSONCreated = true;
-		Date date = new Date();
+		
 
 		if(DSConfig.DEBUG.equals("true")) {
-			String str = " Processing message id " + message.getMessageId();
-			System.out.println(formatter.format(date) + str);
+			String str = "Processing message id " + message.getMessageId();
+			System.out.println(DatePretty.date() + str);
 		}
 		try {
 			// Parse the information from message body. the information contains contains fields like test and xml
@@ -207,18 +199,17 @@ public class AWSWorker {
 			JSONObject jsonObject = new JSONObject(body);
 			xml = (String) jsonObject.get("xml");
 			// Used in the test mode
-			test = (Integer) jsonObject.get("test");
+			test = (String) jsonObject.get("test");
 
 		}
 		// Catch exceptions while trying to create a JSON object
 		catch(JSONException e) {
-			System.err.println(formatter.format(date) + " " + e.getMessage());
+			System.err.println(DatePretty.date() + e.getMessage());
 			JSONCreated = false;
 		}
 		// Catch java.lang exceptions (trying to convert null to String) - make sure your message contains both those fields
 		catch(Exception e) {
-			date = new Date();
-			System.err.println(formatter.format(date) + " " + e.getMessage());
+			System.err.println(DatePretty.date() + e.getMessage());
 			JSONCreated = false;
 		}
 		// If JSON object created successfully - continue
@@ -227,9 +218,8 @@ public class AWSWorker {
 		}
 		// If JSON object wasn't created - ignore message
 		else {
-			String errorMessage = " Null or bad body in message id " + message.getMessageId() + ". Ignoring.";
-			date = new Date();
-			System.out.println(formatter.format(date) + errorMessage);
+			String errorMessage = "Null or bad body in message id " + message.getMessageId() + ". Ignoring.";
+			System.out.println(DatePretty.date() + errorMessage);
 		}
 		// Delete received message from queue
 		queue.deleteMessage(queueUrl, message.getReceiptHandle());

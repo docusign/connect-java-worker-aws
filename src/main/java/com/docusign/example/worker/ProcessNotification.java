@@ -20,8 +20,6 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class ProcessNotification {
@@ -37,7 +35,6 @@ public class ProcessNotification {
 	private static String orderNumber;
 	// Access to the current working directory - in order to save the folders in the right path
 	public static String mainPath = Paths.get(".").toAbsolutePath().normalize().toString();
-	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 	/**
 	 * Process the notification message
@@ -45,9 +42,9 @@ public class ProcessNotification {
 	 * @param xml contains all the information of the envelope
 	 * @throws Exception failed to create file or failed to save the document - caught at startQueue method
 	 */
-	public static void process(Integer test, String xml) throws Exception{
+	public static void process(String test, String xml) throws Exception{
 		// Send the message to the test mode
-		if(test > 0) {
+		if(!test.isEmpty()) {
 			processTest(test);
 		}
 		// In test mode there is no xml sting, should be checked before trying to parse it
@@ -123,7 +120,6 @@ public class ProcessNotification {
 
 			// Step 2. Filter the notifications
 			boolean ignore = false;
-			Date date = new Date();
 
 			// Check if the envelope was sent from the test mode 
 			// If sent from test mode - ok to continue even if the status != Completed
@@ -131,7 +127,7 @@ public class ProcessNotification {
 				if(!status.equals("Completed")) {
 					ignore = true;
 					if(DSConfig.DEBUG.equals("true")) {
-						System.out.println(formatter.format(date) + " IGNORED: envelope status is " + status);
+						System.out.println(DatePretty.date() + "IGNORED: envelope status is " + status);
 					}
 				}
 			}
@@ -139,7 +135,7 @@ public class ProcessNotification {
 			if(orderNumber == null) {
 				ignore = true;
 				if(DSConfig.DEBUG.equals("true")) {
-					System.out.println(formatter.format(date) + " IGNORED: envelope does not have a " +
+					System.out.println(DatePretty.date() + "IGNORED: envelope does not have a " +
 							DSConfig.ENVELOPE_CUSTOM_FIELD + " envelope custom field.");
 				}
 			}
@@ -165,7 +161,6 @@ public class ProcessNotification {
 	 */
 	private static void saveDoc(String envelopeId, String orderNumber) throws Exception {
 
-		Date date = new Date();
 		try {
 			ApiClient dsApiClient = new ApiClient();
 			JWTAuth dsJWTAuth = new JWTAuth(dsApiClient);
@@ -180,8 +175,7 @@ public class ProcessNotification {
 			File file = new File( Paths.get(mainPath, "output").toString());
 			if (!file.exists()) {
 				if (!file.mkdir()) {
-					date = new Date();
-					throw new Exception(formatter.format(date) + " Failed to create directory");
+					throw new Exception(DatePretty.date() + "Failed to create directory");
 				}
 			} 
 
@@ -199,13 +193,11 @@ public class ProcessNotification {
 			}
 			// Catch exception if failed to create file
 			catch(Exception e) {
-				date = new Date();
-				throw new Exception(formatter.format(date) + " Failed to create file");
+				throw new Exception(DatePretty.date() + "Failed to create file");
 			}
 			// Catch exception if BREAK_TEST equals to true or if orderNumber contains "/break"
 			if(DSConfig.ENABLE_BREAK_TEST.equals("true") && ("" + orderNumber).contains("/break")) {
-				date = new Date();
-				throw new Exception (formatter.format(date) + " Break test");
+				throw new Exception (DatePretty.date() + "Break test");
 			}
 		}
 		catch (ClientHandlerException e) {
@@ -214,11 +206,10 @@ public class ProcessNotification {
 
 		// Catch exception while fetching and saving docs for envelope
 		catch(Exception e) {
-			date = new Date();
-			System.err.println(formatter.format(date) + 
-					" Error while fetching and saving docs for envelope " + envelopeId + ", order " + orderNumber);
+			System.err.println(DatePretty.date() + 
+					"Error while fetching and saving docs for envelope " + envelopeId + ", order " + orderNumber);
 			System.err.println(e.getMessage());
-			throw new Exception (formatter.format(date) + " saveDoc error");
+			throw new Exception (DatePretty.date() + "saveDoc error");
 		}
 	}
 
@@ -227,14 +218,11 @@ public class ProcessNotification {
 	 * @param test contains the test number
 	 * @throws Exception if failed to create directory or failed to rename a file name 
 	 */
-	private static void processTest(Integer test) throws Exception {
-
-		Date date = new Date();
+	private static void processTest(String test) throws Exception {
 
 		// Exit the program if BREAK_TEST equals to true or if orderNumber contains "/break"
 		if(DSConfig.ENABLE_BREAK_TEST.equals("true") && ("" + test).contains("/break")){
-			date = new Date();
-			System.err.println(formatter.format(date)+ " BREAKING worker test!");
+			System.err.println(DatePretty.date() + "BREAKING worker test!");
 			System.exit(2);
 		}
 
@@ -245,8 +233,7 @@ public class ProcessNotification {
 		File testDir = new File(Paths.get(mainPath, testDirName).toString());
 		if (!testDir.exists()) {
 			if (!testDir.mkdir()) {
-				date = new Date();
-				throw new Exception(formatter.format(date) + " Failed to create directory");
+				throw new Exception(DatePretty.date() + "Failed to create directory");
 			}
 		}
 
@@ -266,8 +253,7 @@ public class ProcessNotification {
 					if(!oldFile.renameTo(newFile)) {
 						TimeUnit.MILLISECONDS.sleep(500);
 						if(j==2) {
-							date = new Date();
-							throw new Exception(formatter.format(date) + " Could not rename "+ oldFile.getName() + " to " + newFile.getName());
+							throw new Exception(DatePretty.date() + "Could not rename "+ oldFile.getName() + " to " + newFile.getName());
 						}
 					}
 					else{
@@ -280,9 +266,8 @@ public class ProcessNotification {
 		// The new test message will be placed in test1 - creating new file
 		File newFile = new File(testDir, "test1.txt");
 		FileWriter writer = new FileWriter(newFile);
-		writer.write(test.toString());
-		date = new Date();
-		System.out.println(formatter.format(date) + " New file created");
+		writer.write(test);
+		System.out.println(DatePretty.date() + "New file created");
 		writer.close();
 	}
 }

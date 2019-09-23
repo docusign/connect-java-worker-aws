@@ -12,6 +12,7 @@ import com.docusign.esign.model.EnvelopeSummary;
 import com.docusign.example.worker.DSConfig;
 import com.docusign.example.worker.ProcessNotification;
 import com.docusign.example.test.CreateEnvelope;
+import com.docusign.example.worker.DatePretty;
 
 public class SavingEnvTest {
 
@@ -19,16 +20,16 @@ public class SavingEnvTest {
 
 	@Test
 	public void test() {
-		System.out.println("Starting");
+		System.out.println(DatePretty.date() + "Starting");
 		sendEnvelope();
 		created();
-		System.out.println("Done");
+		System.out.println(DatePretty.date() + "Done");
 	}
 
 	public void sendEnvelope() {
 		try {
 			System.setProperty("https.protocols","TLSv1.2");
-			System.out.println("\nSending an envelope. The envelope includes HTML, Word, and PDF documents.\n"
+			System.out.println("Sending an envelope. The envelope includes HTML, Word, and PDF documents.\n"
 					+ "It takes about 15 seconds for DocuSign to process the envelope request... ");
 			EnvelopeSummary result = new CreateEnvelope(apiClient).sendEnvelope();
 			System.out.println(

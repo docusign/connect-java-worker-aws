@@ -18,6 +18,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import com.docusign.example.worker.DSConfig;
 import com.docusign.example.worker.ProcessNotification;
+import com.docusign.example.worker.DatePretty;
 
 public class RunTest {
 
@@ -30,7 +31,6 @@ public class RunTest {
 	public static String mode; // many or few
 	ArrayList<String> testsSent = new ArrayList<String>(); // test values sent that should also be receieved
 	private static boolean foundAll = false;
-	private static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 	@Test
 	public void startTest(String modeName) throws InterruptedException {
@@ -39,11 +39,9 @@ public class RunTest {
 		for(int i=0; i<=7 ; i++) {
 			timeChecks[i] = timeStart.plusHours(i+1);
 		}
-		Date date = new Date();
-		System.out.println(date + "Starting");
+		System.out.println(DatePretty.date() + "Starting");
 		doTests();
-		date = new Date();
-		System.out.println(date + "Done");
+		System.out.println(DatePretty.date() + "Done");
 		
 	}
 
@@ -65,9 +63,8 @@ public class RunTest {
 
 
 	private void showStatus() {
-		Date date = new Date();
 		double rate = (100.0 * successes) / (enqueueErrors + dequeueErrors + successes);
-		System.out.println(formatter.format(date) + " #### Test statistics: " + successes + " (" + String.format("%.2f", rate) + "%) successes, " +
+		System.out.println(DatePretty.date() + "#### Test statistics: " + successes + " (" + String.format("%.2f", rate) + "%) successes, " +
 				enqueueErrors + " enqueue errors, " + dequeueErrors + " dequeue errors.");
 	}
 
@@ -179,12 +176,10 @@ public class RunTest {
 			}
 		}
 		catch(SocketTimeoutException e) {
-			Date date = new Date();
-			Assert.fail(formatter.format(date) + " send1: SocketTimeoutException - failed to read: " + e);
+			Assert.fail(DatePretty.date() + "send1: SocketTimeoutException - failed to read: " + e);
 		}
 		catch(IOException e) {
-			Date date = new Date();
-			Assert.fail(formatter.format(date) + " send1: IOException - failed to open url connection: " + e);
+			Assert.fail(DatePretty.date() + "send1: IOException - failed to open url connection: " + e);
 		}
 	}
 
