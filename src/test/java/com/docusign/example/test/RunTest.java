@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -98,8 +99,8 @@ public class RunTest {
 			fileData = "";
 			try {
 				// The path of the files created of Test mode
-				File file = new File(ProcessNotification.mainPath + "\\" + DSConfig.TEST_OUTPUT_DIR_NAME + 
-						"\\test" + i + ".txt");
+				File testDir = new File(Paths.get(ProcessNotification.mainPath, DSConfig.TEST_OUTPUT_DIR_NAME).toString());
+				File file = new File(testDir, "test" + i + ".txt");
 				if(file.exists() && !file.equals(null)) {
 					BufferedReader br = new BufferedReader(new FileReader(file)); 
 					fileData = br.readLine();
