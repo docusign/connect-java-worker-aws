@@ -30,11 +30,31 @@ SDK libraries for C#, Java, Node.js, Python, Ruby, C++, and Go.
 
 ## Installation
 
-1. Install the example 
+### Introduction
+First, install the **Lambda listener** on AWS and set up the SQS queue.
+
+Then set up this code example to receive and process the messages
+received via the SQS queue.
+
+### Eclipse installation
+
+See the [Eclipse instructions](https://github.docusignhq.com/chen-ostrovski/connect-java-worker-aws/blob/master/docs/Readme.Eclipse.md)
+
+### Installing the Lambda Listener
+
+Install the example 
    [Connect listener for AWS](https://github.com/docusign/connect-node-listener-aws)
    on AWS.
    At the end of this step, you will have the
-   `Queue URL`, `Queue Region` and `Enqueue url`.
+   `Queue URL`, `Queue Region` and `Enqueue url` that you need for the next step.
+
+### Installing the worker (this repository)
+
+#### Requirements
+Install the latest Long Term Support version of 
+Java v1.7, v1.8 or later on your system.
+
+1. Download or clone this repository.
 
 1. Using AWS IAM, create an IAM `User` with 
    access to your SQS queue. 
@@ -42,9 +62,6 @@ SDK libraries for C#, Java, Node.js, Python, Ruby, C++, and Go.
    Configure environment variables 
    `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` with the
    IAM user credentials.
-
-1. Install the latest Long Term Support version of 
-   Java v1.7, v1.8 or later on your system.
 
 1. Configure a DocuSign Integration Key for the application.
    The application uses the OAuth JWT Grant flow.
@@ -68,10 +85,6 @@ SDK libraries for C#, Java, Node.js, Python, Ruby, C++, and Go.
   for more information.
 * The project's main class is
   `com.docusign.example.jwt.AWSWorker`
-
-### Eclipse installation
-
-See the [Eclipse instructions](https://github.docusignhq.com/chen-ostrovski/connect-java-worker-aws/blob/master/docs/Readme.Eclipse.md)
 
 
 ## Configure the example
