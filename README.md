@@ -126,10 +126,34 @@ rjRsm6YTpoxh7nuW2qnFfMA58UPs9tonN/z1pr9mKfwmamtPXeMSJeEZUVmh7mNx\n\
 PEHgznlGh/vUboCuA4tQOcKytxFfKG4F+jM/g4GH9z46KZOow3Hb6g==\n\
 -----END RSA PRIVATE KEY-----
 ````  
-
 ## Run the examples
 
 The project's main class is `com.docusign.example.jwt.AWSWorker`
+
+## Testing
+Configure a DocuSign Connect subscription to send notifications to
+the Cloud Function. Create / complete a DocuSign envelope.
+The envelope **must include an Envelope Custom Field named "Sales order".**
+
+* Check the Connect logs for feedback.
+* Check the console output of this app for log output.
+* Check the `output` directory to see if the envelope's
+  combined documents and CoC were downloaded.
+
+  For this code example, the 
+  envelope's documents will only be downloaded if
+  the envelope is `complete` and includes a 
+  `Sales order` custom field.
+
+## Unit Tests
+Includes three types of testing:
+* [SavingEnvelopeTest.cs](UnitTests/SavingEnvelopeTest.cs) allow you to send an envelope to your amazon sqs from the program. The envelope is saved at `output` directory although its status is `sent`.
+
+* [RunTest.cs](UnitTests/RunTest.cs) divides into two types of tests, both submits tests for 8 hours and updates every hour about the amount of successes or failures that occurred in that hour, the differences between the two are:
+    * `few` - Submits 5 tests every hour.
+    * `many` - Submits many tests every hour.
+
+In order to run the tests you need to first run the program. then choose the wanted test and run it also. 
 
 ## Support, Contributions, License
 
