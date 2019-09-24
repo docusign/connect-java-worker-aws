@@ -167,7 +167,8 @@ public class ProcessNotification {
 			// Checks for the token before calling the function getToken
 			dsJWTAuth.checkToken(); 
 			dsApiClient.setBasePath(dsJWTAuth.getBasePath());
-			dsApiClient.addDefaultHeader("Authorization", "Bearer " + dsJWTAuth.getToken());
+			dsApiClient.setAccessToken(dsJWTAuth.getToken(), (long) 600);
+			//dsApiClient.addDefaultHeader("Authorization", "Bearer " + dsJWTAuth.getToken());
 			EnvelopesApi envelopesApi = new EnvelopesApi(dsApiClient);
 
 
