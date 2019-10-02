@@ -21,6 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProcessNotification {
 
@@ -43,16 +45,38 @@ public class ProcessNotification {
 	 * @throws Exception failed to create file or failed to save the document - caught at startQueue method
 	 */
 	public static void process(String test, String xml) throws Exception{
-		// Send the message to the test mode
-		if(!test.isEmpty()) {
-			processTest(test);
+
+		// Guarding against injection attacks
+		String pattern = "[^0-9]";
+		// Create a Pattern object
+		Pattern regex = Pattern.compile(pattern);
+		// Now create matcher object.
+		Matcher matcher = regex.matcher(test);
+		// Check the incoming test variable to ensure that it ONLY contains the expected data (empty string "", "/break" or integers string)
+		// matcher.find() equals true when it finds wrong input
+		boolean validInput = test.equals("/break") || test.isEmpty() || !matcher.find();
+		if (validInput) {
+			if(!test.isEmpty()) {
+				// Message from test mode
+				processTest(test);
+			}
 		}
+		else {
+			System.err.println(DatePretty.date() + "Wrong test value: " + test);
+			System.err.println("test can only be: /break, empty string or integers string");
+		}
+
 		// In test mode there is no xml sting, should be checked before trying to parse it
 		if(!xml.isEmpty()) {
-			//Step 1. parse the xml
-			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			// Guarding against an XML external entity injection attack
+			dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
 			InputSource is = new InputSource();
 			is.setCharacterStream(new StringReader(xml));
+			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(is);
 
 			// To get the <node_name> nodes direct children of <EnvelopeStatus> use //EnvelopeStatus/node_name
@@ -120,24 +144,36 @@ public class ProcessNotification {
 
 			// Step 2. Filter the notifications
 			boolean ignore = false;
+			// Guarding against injection attacks
+			// Check the incoming orderNumber variable to ensure that it ONLY contains the expected data ("Test_Mode" or integers string)
+			// Envelope might not have Custom field when orderNumber == null
+			// matcher.find() equals true when it finds wrong input
+			matcher = regex.matcher(orderNumber);
+			validInput = orderNumber.equals("Test_Mode") || !matcher.find() || orderNumber == null;
+			if(validInput) {
+				// Check if the envelope was sent from the test mode 
+				// If sent from test mode - ok to continue even if the status != Completed
+				if(!orderNumber.equals("Test_Mode")) {
+					if(!status.equals("Completed")) {
+						ignore = true;
+						if(DSConfig.DEBUG.equals("true")) {
+							System.err.println(DatePretty.date() + "IGNORED: envelope status is " + status);
+						}
+					}
+				}
 
-			// Check if the envelope was sent from the test mode 
-			// If sent from test mode - ok to continue even if the status != Completed
-			if(!orderNumber.equals("Test_Mode")) {
-				if(!status.equals("Completed")) {
+				if(orderNumber == null) {
 					ignore = true;
 					if(DSConfig.DEBUG.equals("true")) {
-						System.out.println(DatePretty.date() + "IGNORED: envelope status is " + status);
+						System.err.println(DatePretty.date() + "IGNORED: envelope does not have a " +
+								DSConfig.ENVELOPE_CUSTOM_FIELD + " envelope custom field.");
 					}
 				}
 			}
-			
-			if(orderNumber == null) {
+			else {
 				ignore = true;
-				if(DSConfig.DEBUG.equals("true")) {
-					System.out.println(DatePretty.date() + "IGNORED: envelope does not have a " +
-							DSConfig.ENVELOPE_CUSTOM_FIELD + " envelope custom field.");
-				}
+				System.err.println(DatePretty.date() + "Wrong orderNumber value: " + orderNumber);
+				System.err.println("orderNumber can only be: Test_Mode or integers string");
 			}
 
 			// Step 3. (Future) Check that this is not a duplicate notification
