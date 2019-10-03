@@ -1,12 +1,11 @@
 # Eclipse installation 
 
- - ask Larry
 The [IntelliJ IDE](https://www.jetbrains.com/idea/)
 (community or ultimate editions) can also be
-used with the example:
+used with this example.
 
 **Step 1.** Download or clone the
-[eg-01-java-jwt](https://github.com/docusign/eg-01-java-jwt)
+[connect-java-worker-aws](https://github.com/docusign/connect-java-worker-aws)
    repository
 
 **Step 2.** Start Eclipse click on **File** at the top left corner
@@ -56,7 +55,7 @@ In order for them to work, you **have** to use them from the **AWSWorker.java** 
 
 ![Running or debugging the example](RunAndDebug.png)
 
-## Configuring the example via environment variables - ask Larry
+## Configuring the example via environment variables
 Instead of the config.properties file, environment variables
 can be used.
 
