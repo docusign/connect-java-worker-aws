@@ -1,6 +1,6 @@
 # Java: Connect Worker for AWS
 
-Repository: [connect-java-worker-aws](https://github.docusignhq.com/chen-ostrovski/connect-java-worker-aws).
+Repository: [connect-java-worker-aws](https://github.com/docusign/connect-java-worker-aws).
 
 ## Introduction
 
@@ -38,7 +38,7 @@ received via the SQS queue.
 
 ### Eclipse installation
 
-See the [Eclipse instructions](https://github.docusignhq.com/chen-ostrovski/connect-java-worker-aws/blob/master/docs/Readme.Eclipse.md)
+See the [Eclipse instructions](https://github.com/docusign/connect-java-worker-aws/blob/master/docs/Readme.Eclipse.md)
 
 ### Installing the Lambda Listener
 
@@ -176,4 +176,4 @@ Contributions via Pull Requests are appreciated.
 All contributions must use the MIT License.
 
 This repository uses the MIT license, see the
-[LICENSE](https://github.com/docusign/eg-01-java-jwt/blob/master/LICENSE) file.
+[LICENSE](https://github.com/docusign/connect-java-worker-aws/blob/master/LICENSE) file.
